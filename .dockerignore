@@ -1,0 +1,13 @@
+.git
+.gitignore
+.env
+vendor
+node_modules
+public/build
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+npm-debug.log
+README.md
+requirements.md
