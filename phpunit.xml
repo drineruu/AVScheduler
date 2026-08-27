@@ -29,5 +29,8 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="GOOGLE_SHEETS_SPREADSHEET_ID" value=""/>
+        <env name="GOOGLE_SERVICE_ACCOUNT_JSON" value=""/>
+        <env name="GOOGLE_SHEETS_CACHE_ENABLED" value="false"/>
     </php>
 </phpunit>
