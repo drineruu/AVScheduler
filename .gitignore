@@ -23,3 +23,4 @@ yarn-error.log
 /.zed
 service-account*.json
 composer-setup.php
+private-data

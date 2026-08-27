@@ -1,8 +1,8 @@
 # Audio/Video Schedule Generator
 
-A lightweight Laravel + Inertia + Vue application that will generate a monthly audio/video support schedule for a local Jehovah's Witness congregation.
+A lightweight Laravel + Inertia + Vue application that generates a monthly audio/video support schedule for a local Jehovah's Witness congregation.
 
-Congregation data will live in **Google Sheets**, not in a SQL database. Persistence is not wired up yet (Phase 2). Runtime data will not be stored in this repository.
+Congregation data lives in **Google Sheets**, not in a SQL database. Runtime data is not stored in this repository.
 
 ## Requirements
 
@@ -30,6 +30,34 @@ http://localhost:8000
 
 `/` redirects to `/schedule`.
 
+## Google Sheets setup
+
+1. Create a Google Cloud project.
+2. Enable the **Google Sheets API**.
+3. Create a **service account** and download its JSON key.
+4. Create a Google Spreadsheet with tabs named:
+   - `Settings`
+   - `Brothers`
+   - `Meetings`
+   - `Schedule`
+5. Share the spreadsheet with the service account email (`...@....iam.gserviceaccount.com`) as **Editor**.
+6. Configure environment variables in `.env`:
+
+```env
+GOOGLE_SHEETS_SPREADSHEET_ID=your-spreadsheet-id
+GOOGLE_SERVICE_ACCOUNT_JSON=/path/to/service-account.json
+```
+
+`GOOGLE_SERVICE_ACCOUNT_JSON` may also contain the full JSON key as a single-line string (useful on Render).
+
+7. Initialize headers and the default settings row:
+
+```bash
+docker compose exec app php artisan sheets:setup
+```
+
+The setup command creates missing tabs, writes headers, and seeds the default settings row when the Settings tab is empty. It does not overwrite existing data rows.
+
 ## Commands
 
 | Task | Command |
@@ -39,6 +67,7 @@ http://localhost:8000
 | Logs | `docker compose logs` |
 | Shell | `docker compose exec app bash` |
 | Tests | `docker compose exec app php artisan test` |
+| Initialize sheets | `docker compose exec app php artisan sheets:setup` |
 | Clear caches | `docker compose exec app php artisan optimize:clear` |
 | Vite dev (HMR) | `docker compose exec app npm run dev` |
 | Production assets | `docker compose exec app npm run build` |
@@ -53,7 +82,7 @@ GET /health
 
 Returns `{"status":"ok"}`.
 
-## Stack (Phase 1)
+## Stack
 
 - PHP 8.3
 - Laravel 11
@@ -63,12 +92,30 @@ Returns `{"status":"ok"}`.
 - Vite
 - TypeScript
 - Pest
+- Google Sheets API (`google/apiclient`)
 - Docker (single `app` service, no database container)
+
+## Architecture (Phase 2)
+
+```text
+Controllers
+    ↓
+Repositories
+    ↓
+SpreadsheetStorageInterface
+    ↓
+GoogleSheetsService
+    ↓
+Google Spreadsheet
+```
+
+Tests use `Tests\Fakes\FakeSpreadsheetStorage` so the suite does not call the live Google API.
 
 ## What is not implemented yet
 
-Later phases add Google Sheets storage, brothers and meetings CRUD, the scheduling engine, PDF export, and Render deployment.
+Later phases add brothers and meetings CRUD UI, the scheduling engine, PDF export, and Render deployment.
 
 ## Notes
 
-Laravel 11 is required by the project specification. Composer 2.10 blocks some `laravel/framework` 11.x releases because of published security advisories. This project ignores advisories for `laravel/framework` only so the specified version can be installed. Review `composer audit` before any production deployment.
+- Do not commit `.env`, `service-account*.json`, or production spreadsheet IDs.
+- Laravel 11 is required by the project specification. Composer 2.10 blocks some `laravel/framework` 11.x releases because of published security advisories. This project ignores advisories for `laravel/framework` only so the specified version can be installed. Review `composer audit` before any production deployment.

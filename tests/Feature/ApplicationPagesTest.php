@@ -14,18 +14,24 @@ it('redirects the home page to the schedule', function () {
 });
 
 it('renders the schedule page', function () {
+    fakeBrothersStorage();
+
     $this->get('/schedule')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page->component('Schedule/Index'));
 });
 
 it('renders the meetings page', function () {
+    fakeBrothersStorage();
+
     $this->get('/meetings')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page->component('Meetings/Index'));
 });
 
 it('renders the brothers page', function () {
+    fakeBrothersStorage();
+
     $this->get('/brothers')
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page->component('Brothers/Index'));
