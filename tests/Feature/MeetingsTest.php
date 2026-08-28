@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\FlashMessages;
 use Inertia\Testing\AssertableInertia as Assert;
 
 function seedTestBrother(int $id = 1, string $name = 'Joel Angan-angan'): array
@@ -55,7 +56,7 @@ it('creates a meeting', function () {
         'busy_brothers' => [1],
     ])
         ->assertRedirect(route('meetings.index', ['month' => '2026-08']))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('meetings.index', ['month' => '2026-08']))
         ->assertInertia(fn (Assert $page) => $page
@@ -85,7 +86,7 @@ it('updates a meeting', function () {
         'busy_brothers' => [2],
     ])
         ->assertRedirect(route('meetings.index', ['month' => '2026-08']))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('meetings.index', ['month' => '2026-08']))
         ->assertInertia(fn (Assert $page) => $page
@@ -105,7 +106,7 @@ it('deletes a meeting', function () {
 
     $this->delete(route('meetings.destroy', '2026-08-02'))
         ->assertRedirect(route('meetings.index', ['month' => '2026-08']))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('meetings.index', ['month' => '2026-08']))
         ->assertInertia(fn (Assert $page) => $page->has('meetings', 0));

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateBrotherRequest;
 use App\Repositories\BrotherRepository;
 use App\Repositories\MeetingRepository;
 use App\Repositories\ScheduleRepository;
+use App\Support\FlashMessages;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,7 +35,7 @@ class BrotherController extends Controller
 
         return redirect()
             ->route('brothers.index')
-            ->with('success', 'Brother created successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     public function edit(int $brother, BrotherRepository $brothers): Response
@@ -64,7 +65,7 @@ class BrotherController extends Controller
 
         return redirect()
             ->route('brothers.index')
-            ->with('success', 'Brother updated successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     public function destroy(
@@ -87,7 +88,7 @@ class BrotherController extends Controller
 
         return redirect()
             ->route('brothers.index')
-            ->with('success', 'Brother deleted successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     private function brotherIsReferenced(

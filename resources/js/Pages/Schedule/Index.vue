@@ -35,20 +35,31 @@ const props = defineProps<{
     schedule: ScheduleRow[];
     brothers: Brother[];
     settings: Settings;
-    month: string;
+    startDate: string;
+    endDate: string;
     hasSavedSchedule: boolean;
     warnings: Warning[];
 }>();
 
-const monthInput = ref(props.month);
-const form = useForm({ month: props.month });
+const startDateInput = ref(props.startDate);
+const endDateInput = ref(props.endDate);
 
-function applyMonthFilter(): void {
-    router.get(route('schedule.index'), { month: monthInput.value }, { preserveState: true });
+const form = useForm({
+    start_date: props.startDate,
+    end_date: props.endDate,
+});
+
+function applyDateFilter(): void {
+    router.get(
+        route('schedule.index'),
+        { start_date: startDateInput.value, end_date: endDateInput.value },
+        { preserveState: true },
+    );
 }
 
 function generateSchedule(): void {
-    form.month = monthInput.value;
+    form.start_date = startDateInput.value;
+    form.end_date = endDateInput.value;
     form.post(route('schedule.generate'));
 }
 </script>
@@ -68,23 +79,40 @@ function generateSchedule(): void {
                         {{ settings.address }}
                     </p>
                 </div>
-                <button
-                    type="button"
-                    class="inline-flex items-center justify-center rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-50"
-                    :disabled="form.processing"
-                    @click="generateSchedule"
-                >
-                    {{ hasSavedSchedule ? 'Regenerate Schedule' : 'Generate Schedule' }}
-                </button>
+                <div class="flex flex-wrap gap-3">
+                    <button
+                        type="button"
+                        class="inline-flex items-center justify-center rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-50"
+                        :disabled="form.processing"
+                        @click="generateSchedule"
+                    >
+                        {{ hasSavedSchedule ? 'Regenerate Schedule' : 'Generate Schedule' }}
+                    </button>
+                    <a
+                        :href="route('schedule.pdf', { start_date: startDateInput, end_date: endDateInput })"
+                        class="inline-flex items-center justify-center rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    >
+                        Export PDF
+                    </a>
+                </div>
             </div>
 
-            <form class="mt-6 flex flex-wrap items-end gap-3" @submit.prevent="applyMonthFilter">
+            <form class="mt-6 flex flex-wrap items-end gap-3" @submit.prevent="applyDateFilter">
                 <div>
-                    <label for="month" class="block text-sm font-medium text-slate-700">Month</label>
+                    <label for="start_date" class="block text-sm font-medium text-slate-700">Start date</label>
                     <input
-                        id="month"
-                        v-model="monthInput"
-                        type="month"
+                        id="start_date"
+                        v-model="startDateInput"
+                        type="date"
+                        class="mt-1 rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                </div>
+                <div>
+                    <label for="end_date" class="block text-sm font-medium text-slate-700">End date</label>
+                    <input
+                        id="end_date"
+                        v-model="endDateInput"
+                        type="date"
                         class="mt-1 rounded-md border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
                     />
                 </div>
