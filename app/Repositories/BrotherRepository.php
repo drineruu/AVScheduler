@@ -147,16 +147,18 @@ class BrotherRepository
 
     public function delete(int $id): void
     {
-        $brothers = array_values(array_filter(
-            $this->all(),
+        $brothers = $this->all();
+
+        $filtered = array_values(array_filter(
+            $brothers,
             static fn (array $brother) => $brother['id'] !== $id,
         ));
 
-        if (count($brothers) === count($this->all())) {
+        if (count($filtered) === count($brothers)) {
             throw SpreadsheetException::notFound('Brother', (string) $id);
         }
 
-        $this->persist($brothers);
+        $this->persist($filtered);
     }
 
     public function nextId(): int

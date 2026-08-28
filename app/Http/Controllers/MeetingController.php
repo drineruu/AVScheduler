@@ -6,6 +6,7 @@ use App\Http\Requests\StoreMeetingRequest;
 use App\Http\Requests\UpdateMeetingRequest;
 use App\Repositories\BrotherRepository;
 use App\Repositories\MeetingRepository;
+use App\Support\FlashMessages;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -46,7 +47,7 @@ class MeetingController extends Controller
 
         return redirect()
             ->route('meetings.index', ['month' => substr($request->validated('date'), 0, 7)])
-            ->with('success', 'Meeting created successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     public function edit(string $date, MeetingRepository $meetings, BrotherRepository $brothers): Response
@@ -77,7 +78,7 @@ class MeetingController extends Controller
 
         return redirect()
             ->route('meetings.index', ['month' => substr($date, 0, 7)])
-            ->with('success', 'Meeting updated successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     public function destroy(string $date, MeetingRepository $meetings): RedirectResponse
@@ -90,7 +91,7 @@ class MeetingController extends Controller
 
         return redirect()
             ->route('meetings.index', ['month' => substr($date, 0, 7)])
-            ->with('success', 'Meeting deleted successfully.');
+            ->with('success', FlashMessages::DATA_UPDATED);
     }
 
     private function resolveMonth(?string $month): string

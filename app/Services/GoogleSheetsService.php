@@ -8,6 +8,7 @@ use Google\Client;
 use Google\Service\Sheets;
 use Google\Service\Sheets\AddSheetRequest;
 use Google\Service\Sheets\BatchUpdateSpreadsheetRequest;
+use Google\Service\Sheets\ClearValuesRequest;
 use Google\Service\Sheets\Request as SheetsRequest;
 use Google\Service\Sheets\ValueRange;
 use Illuminate\Support\Facades\Cache;
@@ -55,6 +56,12 @@ class GoogleSheetsService implements SpreadsheetStorageInterface
         ];
 
         try {
+            $this->service()->spreadsheets_values->clear(
+                $spreadsheetId,
+                "{$sheetName}!A:Z",
+                new ClearValuesRequest,
+            );
+
             $valueRange = new ValueRange([
                 'values' => $payload,
             ]);

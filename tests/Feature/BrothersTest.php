@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TrainingRole;
+use App\Support\FlashMessages;
 use Inertia\Testing\AssertableInertia as Assert;
 
 it('lists brothers on the index page', function () {
@@ -27,7 +28,7 @@ it('creates a brother', function () {
         'training_role' => TrainingRole::None->value,
     ])
         ->assertRedirect(route('brothers.index'))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('brothers.index'))
         ->assertInertia(fn (Assert $page) => $page
@@ -62,7 +63,7 @@ it('updates a brother', function () {
         'training_role' => TrainingRole::TraineeAudio->value,
     ])
         ->assertRedirect(route('brothers.index'))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('brothers.index'))
         ->assertInertia(fn (Assert $page) => $page
@@ -88,7 +89,7 @@ it('deletes a brother', function () {
 
     $this->delete(route('brothers.destroy', 1))
         ->assertRedirect(route('brothers.index'))
-        ->assertSessionHas('success');
+        ->assertSessionHas('success', FlashMessages::DATA_UPDATED);
 
     $this->get(route('brothers.index'))
         ->assertInertia(fn (Assert $page) => $page->has('brothers', 0));

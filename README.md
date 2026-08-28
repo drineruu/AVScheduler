@@ -17,7 +17,7 @@ Local PHP and Node.js are **not** required. The `app` container includes PHP 8.3
 git clone <repository-url>
 cd AV-meeting-assignment
 cp .env.example .env
-docker compose up -d
+make start
 ```
 
 The first start copies `.env` if needed, installs PHP and Node dependencies, generates `APP_KEY`, builds frontend assets, and serves the app.
@@ -53,26 +53,28 @@ GOOGLE_SERVICE_ACCOUNT_JSON=/path/to/service-account.json
 7. Initialize headers and the default settings row:
 
 ```bash
-docker compose exec app php artisan sheets:setup
+make sheets-setup
 ```
 
 The setup command creates missing tabs, writes headers, and seeds the default settings row when the Settings tab is empty. It does not overwrite existing data rows.
 
 ## Commands
 
+Run `make` or `make help` to list available targets.
+
 | Task | Command |
 |---|---|
-| Start | `docker compose up -d` |
-| Stop | `docker compose down` |
-| Logs | `docker compose logs` |
-| Shell | `docker compose exec app bash` |
-| Tests | `docker compose exec app php artisan test` |
-| Initialize sheets | `docker compose exec app php artisan sheets:setup` |
-| Clear caches | `docker compose exec app php artisan optimize:clear` |
-| Vite dev (HMR) | `docker compose exec app npm run dev` |
-| Production assets | `docker compose exec app npm run build` |
+| Start | `make start` |
+| Stop | `make stop` |
+| Logs | `make logs` |
+| Shell | `make shell` |
+| Tests | `make test` |
+| Initialize sheets | `make sheets-setup` |
+| Clear caches | `make clear-cache` |
+| Vite dev (HMR) | `make dev` |
+| Production assets | `make build` |
 
-Vite HMR uses port `5173` when `npm run dev` is running. The default `docker compose up` flow serves pre-built assets from `public/build`.
+Vite HMR uses port `5173` when `make dev` is running. The default `make start` flow serves pre-built assets from `public/build`.
 
 ## Health check
 

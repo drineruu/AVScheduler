@@ -14,6 +14,7 @@ Route::redirect('/', '/schedule');
 Route::middleware([])->group(function () {
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
     Route::post('/schedule/generate', [ScheduleController::class, 'generate'])->name('schedule.generate');
+    Route::get('/schedule/pdf', [ScheduleController::class, 'pdf'])->name('schedule.pdf');
     Route::get('/meetings', [MeetingController::class, 'index'])->name('meetings.index');
     Route::get('/meetings/create', [MeetingController::class, 'create'])->name('meetings.create');
     Route::post('/meetings', [MeetingController::class, 'store'])->name('meetings.store');
